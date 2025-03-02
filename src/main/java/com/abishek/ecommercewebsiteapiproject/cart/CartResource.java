@@ -3,6 +3,7 @@ package com.abishek.ecommercewebsiteapiproject.cart;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,9 +45,22 @@ public class CartResource {
 			
 			URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{carprodid}").buildAndExpand(cartsaved.getProductid()).toUri();
 			return ResponseEntity.created(location).build();
-		}
+		} 
 		
 		return ResponseEntity.internalServerError().build();
+	}
+	
+	@RequestMapping(value="cart/deleteproductfromcart",method=RequestMethod.DELETE)
+	public ResponseEntity<Object> deletefromcart(@RequestBody Cart cart){
+		System.out.println(cart);
+
+		
+		int res = cartRepository.deleteByProductidAndUserid(cart.getProductid(), cart.getUserid());
+	
+		return ResponseEntity.ok(null);
+		
+		
+		
 	}
 
 }

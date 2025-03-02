@@ -1,5 +1,7 @@
 package com.abishek.ecommercewebsiteapiproject.cart;
 
+import com.abishek.ecommercewebsiteapiproject.users.User;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -13,6 +15,8 @@ public class Cart {
 	private int storage;
 	private String processor;
 	private String os;
+	
+
 
 	@Override
 	public String toString() {
