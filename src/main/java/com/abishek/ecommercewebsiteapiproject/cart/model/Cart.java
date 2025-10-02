@@ -1,40 +1,39 @@
 package com.abishek.ecommercewebsiteapiproject.cart.model;
 
-import com.abishek.ecommercewebsiteapiproject.users.User;
+import com.abishek.ecommercewebsiteapiproject.products.model.Product;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Cart {
 	
 	@Id
 	@GeneratedValue
-	private int productid;
+	private int cartitemid;
 	private int storage;
 	private String processor;
 	private String os;
 	
-
-
-	@Override
-	public String toString() {
-		return "Cart [productid=" + productid + ", storage=" + storage + ", processor=" + processor + ", os=" + os
-				+ ", brand=" + brand + ", model=" + model + ", graphicscard=" + graphicscard + ", userid=" + userid
-				+ ", price=" + price + "]";
+	private String brand;
+	private String model;
+	private String graphicscard;
+	private String userid;
+	private long price;
+	@OneToOne
+	@JoinColumn(name="product_id")
+	private Product product;
+	public Cart() {
+		super();
 	}
-	public long getPrice() {
-		return price;
+	public int getCartitemid() {
+		return cartitemid;
 	}
-	public void setPrice(long price) {
-		this.price = price;
-	}
-	public int getProductid() {
-		return productid;
-	}
-	public void setProductid(int productid) {
-		this.productid = productid;
+	public void setCartitemid(int cartitemid) {
+		this.cartitemid = cartitemid;
 	}
 	public int getStorage() {
 		return storage;
@@ -78,12 +77,22 @@ public class Cart {
 	public void setUserid(String userid) {
 		this.userid = userid;
 	}
-	public Cart() {
-		super();
+	public long getPrice() {
+		return price;
 	}
-	public Cart(int storage, String processor, String os, String brand, String model, String graphicscard,
-			String userid,long price) {
+	public void setPrice(long price) {
+		this.price = price;
+	}
+	public Product getProduct() {
+		return product;
+	}
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+	public Cart(int cartitemid, int storage, String processor, String os, String brand, String model,
+			String graphicscard, String userid, long price, Product product) {
 		super();
+		this.cartitemid = cartitemid;
 		this.storage = storage;
 		this.processor = processor;
 		this.os = os;
@@ -91,13 +100,9 @@ public class Cart {
 		this.model = model;
 		this.graphicscard = graphicscard;
 		this.userid = userid;
-		this.price =price;
+		this.price = price;
+		this.product = product;
 	}
-	private String brand;
-	private String model;
-	private String graphicscard;
-	private String userid;
-	private long price;
 	
 	
 	

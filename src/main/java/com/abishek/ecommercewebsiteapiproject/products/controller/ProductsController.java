@@ -55,7 +55,15 @@ public class ProductsController {
 
 	//get all products
 	@GetMapping("/products")
-	public ResponseEntity<List<Product>>     getAllProducts(){
+	public ResponseEntity<List<Product>>  getAllProducts(){
+
+        System.out.println("products");
+		
+		List<Product> allproducts = productservice.getAllProducts();
+		if(allproducts==null || allproducts.isEmpty()) {
+			
+			return new ResponseEntity<>(new ArrayList<Product>(),HttpStatus.NOT_FOUND);
+		}
 		
 		
 		return new ResponseEntity<>(productservice.getAllProducts(),HttpStatus.OK);
@@ -64,6 +72,7 @@ public class ProductsController {
 	//add a product)
 	@PostMapping("/products")
 	public ResponseEntity<Object> addProducts(@RequestBody Product product){
+
 		
 		Product addedproduct = productservice.addProducts(product);
 	
@@ -84,6 +93,7 @@ public class ProductsController {
 		
 		if(product==null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
 		}
 		
 		return new ResponseEntity<>(product,HttpStatus.OK);
@@ -95,7 +105,7 @@ public class ProductsController {
 	public ResponseEntity<List<Product>> findProductByBrandName( @PathVariable String brandname){
 		
 		List<Product> productsbybrand = productservice.findProductByBrandName(brandname);
-		if(productsbybrand == null) {
+		if(productsbybrand == null || productsbybrand.isEmpty()) {
 			//return new ArrayList<Product>();
 			return new ResponseEntity<>(new ArrayList<Product>(),HttpStatus.NOT_FOUND);
 		}
@@ -122,6 +132,9 @@ public class ProductsController {
 	public ResponseEntity<List<Brands>> getbrands(){
 		
 		List<Brands> brands = productservice.getbrands();
+		if(brands.isEmpty()) {
+			return new ResponseEntity<>(brands,HttpStatus.NOT_FOUND);
+		}
 		
 		return new ResponseEntity<>(brands,HttpStatus.OK);
 

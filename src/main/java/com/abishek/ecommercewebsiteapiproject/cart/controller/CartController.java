@@ -24,6 +24,7 @@ import com.abishek.ecommercewebsiteapiproject.cart.service.CartService;
 
 @RestController
 @CrossOrigin
+@RequestMapping("/laptopstore/api/v1")
 public class CartController {
 	
 	private CartRepository cartRepository;
@@ -54,23 +55,22 @@ public class CartController {
 		
 		if(cartsaved!=null) {
 			
-			URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{carprodid}").buildAndExpand(cartsaved.getProductid()).toUri();
-			return ResponseEntity.created(location).build();
+			return new ResponseEntity<>(cartsaved,HttpStatus.CREATED);
 		} 
 		
 		return ResponseEntity.internalServerError().build();
 	}
 	
 	//delete product
-	@DeleteMapping("cart/deleteproductfromcart")
-	public ResponseEntity<Object> deletefromcart(@RequestBody Cart cart){
-		System.out.println(cart);
-
-		
-		cartservice.deletefromcart(cart);
-	
-		return new ResponseEntity<>(cart,HttpStatus.OK);
-			
-	}
+//	@DeleteMapping("cart/deleteproductfromcart")
+//	public ResponseEntity<Object> deletefromcart(@RequestBody Cart cart){
+//		System.out.println(cart);
+//
+//		
+//		cartservice.deletefromcart(cart);
+//	
+//		return new ResponseEntity<>(cart,HttpStatus.OK);
+//			
+//	}
 
 }

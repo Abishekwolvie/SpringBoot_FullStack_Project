@@ -51,21 +51,22 @@ public class ProductService {
 	
 	public List<Product> findProductByPriceRange(int minrange,int maxrange){
 		
-		RowMapper productrowmapper  = (ResultSet rs, int rowNum) ->{
-			Product product = new Product();
-			product.setId(rs.getInt("id"));
-			product.setBrand(rs.getString("brand"));
-			product.setIsavailable(rs.getBoolean("isavailable"));
-			product.setModel(rs.getString("model"));
-			product.setNoofunits(rs.getInt("noofunits"));
-			product.setOs(rs.getString("os"));
-			product.setPrice(rs.getLong("price"));
-			
-			return product;
-		};
+//		RowMapper productrowmapper  = (ResultSet rs, int rowNum) ->{
+//			Product product = new Product();
+//			product.setId(rs.getInt("id"));
+//			product.setBrand(rs.getString("brand"));
+//			product.setIsavailable(rs.getBoolean("isavailable"));
+//			product.setModel(rs.getString("model"));
+//			product.setNoofunits(rs.getInt("noofunits"));
+//			product.setOs(rs.getString("os"));
+//			product.setPrice(rs.getLong("price"));
+//			
+//			return product;
+//		};
+//		
+//		return jdbctemplate.query("Select * from product where price between ? and ?",productrowmapper,minrange,maxrange);
 		
-		return jdbctemplate.query("Select * from product where price between ? and ?",productrowmapper,minrange,maxrange);
-		
+		return productrepository.findByPriceBetween(minrange, maxrange);
 	}
 	
 	public List<Brands> getbrands(){

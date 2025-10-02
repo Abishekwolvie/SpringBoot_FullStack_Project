@@ -30,12 +30,12 @@ public class CartService {
 		return cartsaved;
 	}
 	
-	public int deletefromcart(Cart cart) {
-		
-		int res = cartRepository.deleteByProductidAndUserid(cart.getProductid(), cart.getUserid());
-		
-		return res;
-		
-	}
+//	public int deletefromcart(Cart cart) {
+//		
+//		int res = cartRepository.deleteByProductidAndUserid(cart.getProductid(), cart.getUserid());
+//		
+//		return res;
+//		
+//	}
 
 }
