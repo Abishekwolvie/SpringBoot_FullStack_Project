@@ -3,19 +3,20 @@ package com.abishek.ecommercewebsiteapiproject.products.controller;
 import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
-
+import com.abishek.ecommercewebsiteapiproject.products.exceptions.ProductErrorResponse;
+import com.abishek.ecommercewebsiteapiproject.products.exceptions.ProductNotFoundException;
+import com.abishek.ecommercewebsiteapiproject.products.productdto.ProductDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -23,15 +24,6 @@ import com.abishek.ecommercewebsiteapiproject.products.model.Brands;
 import com.abishek.ecommercewebsiteapiproject.products.model.Product;
 import com.abishek.ecommercewebsiteapiproject.products.repository.ProductRepository;
 import com.abishek.ecommercewebsiteapiproject.products.service.ProductService;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 
 @RestController
@@ -55,18 +47,12 @@ public class ProductsController {
 
 	//get all products
 	@GetMapping("/products")
-	public ResponseEntity<List<Product>>  getAllProducts(){
-
-        System.out.println("products");
-		
-		List<Product> allproducts = productservice.getAllProducts();
-		if(allproducts==null || allproducts.isEmpty()) {
-			
-			return new ResponseEntity<>(new ArrayList<Product>(),HttpStatus.NOT_FOUND);
+	public ResponseEntity<List<ProductDto>>  getAllProducts(){
+		List<ProductDto> allproducts = productservice.getAllProducts();
+		if(allproducts.isEmpty()) {
+			throw new ProductNotFoundException("Products not found");
 		}
-		
-		
-		return new ResponseEntity<>(productservice.getAllProducts(),HttpStatus.OK);
+		return new ResponseEntity<>(allproducts,HttpStatus.OK);
 	}
 
 	//add a product)
@@ -87,16 +73,15 @@ public class ProductsController {
 
 	//get a product by id
 	@GetMapping("/products/{productid}")
-	public  ResponseEntity<Product> findProductById(@PathVariable int productid) {
-		
-		Product product  = productservice.findProductById(productid);
-		
-		if(product==null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+	public  ResponseEntity<ProductDto> findProductById(@PathVariable int productid) {
 
-		}
 		
-		return new ResponseEntity<>(product,HttpStatus.OK);
+		Optional<ProductDto> product  = productservice.findProductById(productid);
+
+        product.orElseThrow(()->new ProductNotFoundException("Product not found with the given id :"+productid));
+		
+
+		return new ResponseEntity<>(product.get(),HttpStatus.OK);
 		
 	}
 	
@@ -107,7 +92,8 @@ public class ProductsController {
 		List<Product> productsbybrand = productservice.findProductByBrandName(brandname);
 		if(productsbybrand == null || productsbybrand.isEmpty()) {
 			//return new ArrayList<Product>();
-			return new ResponseEntity<>(new ArrayList<Product>(),HttpStatus.NOT_FOUND);
+//
+            throw new ProductNotFoundException("Product not found with the brand name: "+ brandname);
 		}
 		return new ResponseEntity<>(productsbybrand,HttpStatus.OK);
 	}
@@ -119,7 +105,7 @@ public class ProductsController {
 		//@SuppressWarnings("unchecked")
 		List<Product> productsbyprice = productservice.findProductByPriceRange(minrange, maxrange);
 		if(productsbyprice==null) {
-			return new ResponseEntity<>(new ArrayList<Product>(),HttpStatus.OK);
+			throw new ProductNotFoundException("Products not found within the range " + minrange +" and "+maxrange);
 		}
 		
 		return new ResponseEntity<>(productsbyprice,HttpStatus.OK);
@@ -130,10 +116,12 @@ public class ProductsController {
 	//get brands 
 	@GetMapping("/products/brands")
 	public ResponseEntity<List<Brands>> getbrands(){
+
+
 		
 		List<Brands> brands = productservice.getbrands();
 		if(brands.isEmpty()) {
-			return new ResponseEntity<>(brands,HttpStatus.NOT_FOUND);
+			throw new ProductNotFoundException("Brands not found");
 		}
 		
 		return new ResponseEntity<>(brands,HttpStatus.OK);
@@ -143,33 +131,23 @@ public class ProductsController {
 	@PutMapping("/products")
 	public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
 		
-		try {
+
 			Product productupdated = productservice.updateProduct(product);
 			
 			return new ResponseEntity<Product>(productupdated,HttpStatus.ACCEPTED);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
+
 		
 	}
 	
 	@DeleteMapping("/products/{id}")
 	public ResponseEntity<Object> deleteproduct(@PathVariable int id){
 		
-		try {
-			
+
 			productservice.deleteproduct(id);
 			//return (ResponseEntity<Object>) ResponseEntity.status(HttpStatus.NO_CONTENT);
 			return ResponseEntity.noContent().build();
 			
-		}catch(Exception e) {
-			
-			return ResponseEntity.internalServerError().build();
-			
-		}	
+
 		
 	}
 	
@@ -179,5 +157,7 @@ public class ProductsController {
 		return productservice.searchbykeyword(keyword);
 		
 	}
+
+
 
 }

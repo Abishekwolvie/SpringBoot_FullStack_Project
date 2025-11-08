@@ -3,7 +3,9 @@ package com.abishek.ecommercewebsiteapiproject.products.service;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.abishek.ecommercewebsiteapiproject.products.productdto.ProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -26,9 +28,17 @@ public class ProductService {
 		this.jdbctemplate = jdbctemplate;
 	}
 	
-	public List<Product> getAllProducts(){
-		
-		return productrepository.findAll();
+	public List<ProductDto> getAllProducts(){
+
+        List<Product> products = productrepository.findAll();
+
+        List<ProductDto> productdto = products.stream().map((product -> new ProductDto(
+                product.getPrice(), product.isIsavailable(), product.getNoofunits(), product.getStorage(),
+                product.getProcessor(), product.getOs(), product.getBrand(), product.getModel(), product.getGraphicscard(),
+                product.getImageName(), product.getImageType(), product.getImage(),product.getId()
+        ))).collect(Collectors.toList());
+
+        return productdto;
 	}
 	
 	public Product addProducts(Product product) {
@@ -37,11 +47,19 @@ public class ProductService {
 		
 	}
 	
-	public Product findProductById(int id) {
+	public Optional<ProductDto> findProductById(int id) {
 		
 		 Optional<Product> product = productrepository.findById(id);
+
+
+        Optional<ProductDto> productdto = product.map(productmap -> new ProductDto(productmap.getPrice(), productmap.isIsavailable(), productmap.getNoofunits(), productmap.getStorage(),
+                 productmap.getProcessor(), productmap.getOs(), productmap.getBrand(), productmap.getModel(), productmap.getGraphicscard(),
+                 productmap.getImageName(), productmap.getImageType(), productmap.getImage(), productmap.getId()));
+
+
+
 		 
-		 return product.orElse(new Product());
+		 return productdto;
 	}
 	
 	public List<Product> findProductByBrandName(String brandname){

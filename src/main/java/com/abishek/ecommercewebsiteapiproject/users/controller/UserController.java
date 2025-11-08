@@ -56,7 +56,7 @@ public class UserController {
 	
 	//method to add user
 //	@RequestMapping(value="/user", method=RequestMethod.POST)
-	@PostMapping("/user")
+	@PostMapping("/register")
 	public ResponseEntity<Object> addNewUser(@RequestBody User user) {
 
         user.setPassword(bcryptpasswordencoder.encode(user.getPassword()));

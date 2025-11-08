@@ -22,7 +22,7 @@ public class User {
 	private String password;
 	@Column(nullable = false) 
 	private long mobile;
-    @Column(name="role")
+    @Column(name="role",nullable = false)
     private String role;
 
     public User(long id, String name, String username, String password, long mobile, String role) {

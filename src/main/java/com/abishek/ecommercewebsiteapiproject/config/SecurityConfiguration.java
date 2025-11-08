@@ -37,7 +37,7 @@ public class SecurityConfiguration {
 		
 		httpsecurity.csrf(customizer->customizer.disable());//disabling csrftoken
 		//authenticate all http requests
-		httpsecurity.authorizeHttpRequests(request->request.requestMatchers("/laptopstore/api/v1/user").
+		httpsecurity.authorizeHttpRequests(request->request.requestMatchers("/laptopstore/api/v1/register").
 				permitAll().anyRequest().authenticated());
 		//add a default form validation
 		httpsecurity.httpBasic(Customizer.withDefaults());
