@@ -14,8 +14,16 @@ public class User {
 	public User() {
 		super();
 	}
-	@Column(nullable = false) 
-	private String name;
+
+    public User(String username, String password, long mobile, String role) {
+
+        this.username = username;
+        this.password = password;
+        this.mobile = mobile;
+        this.role = role;
+    }
+
+
 	@Column(nullable = false,unique = true)
 	private String username;
 	@Column(nullable = false) 
@@ -25,9 +33,8 @@ public class User {
     @Column(name="role",nullable = false)
     private String role;
 
-    public User(long id, String name, String username, String password, long mobile, String role) {
+    public User(long id, String username, String password, long mobile, String role) {
         this.id = id;
-        this.name = name;
         this.username = username;
         this.password = password;
         this.mobile = mobile;
@@ -42,13 +49,7 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getUsername() {
         return username;
@@ -70,6 +71,17 @@ public class User {
         return mobile;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", mobile=" + mobile +
+                ", role='" + role + '\'' +
+                '}';
+    }
+
     public void setMobile(long mobile) {
         this.mobile = mobile;
     }
@@ -82,15 +94,5 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", mobile=" + mobile +
-                ", role='" + role + '\'' +
-                '}';
-    }
+
 }

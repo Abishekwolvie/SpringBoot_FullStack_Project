@@ -1,10 +1,12 @@
 package com.abishek.ecommercewebsiteapiproject.users.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.abishek.ecommercewebsiteapiproject.service.JwtService;
+import com.abishek.ecommercewebsiteapiproject.users.exceptions.ExistingUserException;
+import com.abishek.ecommercewebsiteapiproject.users.userdto.UserDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abishek.ecommercewebsiteapiproject.users.repository.UserRepository;
@@ -57,17 +58,27 @@ public class UserController {
 	//method to add user
 //	@RequestMapping(value="/user", method=RequestMethod.POST)
 	@PostMapping("/register")
-	public ResponseEntity<Object> addNewUser(@RequestBody User user) {
+	public ResponseEntity<Object> addNewUser(@RequestBody UserDto userdto) {
+
+        User user = new User(userdto.username(),userdto.password(),userdto.mobile(),userdto.role());
+
+        Optional<User> existinguser = userservice.finduserbyemail(user);
+
+        if(existinguser.isPresent()){
+            throw new ExistingUserException("This email "+ existinguser.get().getUsername() + "is already registered with another user");
+        }
 
         user.setPassword(bcryptpasswordencoder.encode(user.getPassword()));
 		User saved = userservice.addnewuser(user);
-		return new ResponseEntity<>(saved,HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	//method to authenticate for login
 //	@RequestMapping(value="/login", method=RequestMethod.POST)
 	@PostMapping("/login")
-	public String authenticateUser(@RequestBody User user ) {
+	public String authenticateUser(@RequestBody UserDto userdto ) {
+
+        User user = new User(userdto.username(),userdto.password(),userdto.mobile(),userdto.role());
 
         Authentication  authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));

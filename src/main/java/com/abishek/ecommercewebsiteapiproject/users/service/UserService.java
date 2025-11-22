@@ -1,8 +1,10 @@
 package com.abishek.ecommercewebsiteapiproject.users.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +40,7 @@ public class UserService {
 		return userrepository.save(user);
 	}
 	
-	public User finduserbyemail(User user) {
+	public Optional<User> finduserbyemail(User user) {
 		
 		return userrepository.findByUsername(user.getUsername());
 	}

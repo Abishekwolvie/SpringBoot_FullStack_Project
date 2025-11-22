@@ -2,8 +2,11 @@ package com.abishek.ecommercewebsiteapiproject.exceptionhndlers;
 
 import com.abishek.ecommercewebsiteapiproject.products.exceptions.ProductErrorResponse;
 import com.abishek.ecommercewebsiteapiproject.products.exceptions.ProductNotFoundException;
+import com.abishek.ecommercewebsiteapiproject.users.exceptions.ExistingUserException;
+import com.abishek.ecommercewebsiteapiproject.users.exceptions.UserErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -28,5 +31,22 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(productErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 
+    }
+
+
+    @ExceptionHandler(ExistingUserException.class)
+    public ResponseEntity<?> handleuseralreadyexistexception(ExistingUserException exception){
+
+        UserErrorResponse userErrorResponse = new UserErrorResponse(exception.getMessage(),LocalDateTime.now());
+
+        return new ResponseEntity<>(userErrorResponse,HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<?> handleusernamenotfoundexception(UsernameNotFoundException exception){
+
+        UserErrorResponse userErrorResponse = new UserErrorResponse(exception.getMessage(),LocalDateTime.now());
+
+        return new ResponseEntity<>(userErrorResponse,HttpStatus.NOT_FOUND);
     }
 }

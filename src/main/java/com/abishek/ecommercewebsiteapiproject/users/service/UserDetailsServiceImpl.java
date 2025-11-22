@@ -10,6 +10,8 @@ import com.abishek.ecommercewebsiteapiproject.users.model.User;
 import com.abishek.ecommercewebsiteapiproject.users.model.UserPrincipal;
 import com.abishek.ecommercewebsiteapiproject.users.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService{
 	
@@ -26,20 +28,16 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		User user = userrepository.findByUsername(username);
-
-        System.out.println(username);
+		Optional<User> user = userrepository.findByUsername(username);
         System.out.println(user);
-		
-		if(user==null) {
-			System.out.println("404");
-			
-			throw new UsernameNotFoundException("404");
-		}
+
+
+        User userdetail = user.orElseThrow(()->new UsernameNotFoundException("User not found"));
+
 
         //System.out.println(new UserPrincipal(user).getPassword());
 		// TODO Auto-generated method stub
-		return new UserPrincipal(user);
+		return new UserPrincipal(userdetail);
 	}
 
 }
