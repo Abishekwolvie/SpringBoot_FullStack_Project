@@ -5,12 +5,16 @@ import java.util.Optional;
 
 import com.abishek.ecommercewebsiteapiproject.service.JwtService;
 import com.abishek.ecommercewebsiteapiproject.users.exceptions.ExistingUserException;
+import com.abishek.ecommercewebsiteapiproject.users.service.UserDetailsServiceImpl;
+import com.abishek.ecommercewebsiteapiproject.users.userdto.ApiResponse;
 import com.abishek.ecommercewebsiteapiproject.users.userdto.UserDto;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +43,8 @@ public class UserController {
 
     private JwtService jwtService;
 
+
+
     public UserController(UserRepository userrepository, UserService userservice, BCryptPasswordEncoder bcryptpasswordencoder, AuthenticationManager authenticationManager,JwtService jwtService) {
         this.userrepository = userrepository;
         this.userservice = userservice;
@@ -48,7 +54,6 @@ public class UserController {
     }
 
     //method to get all users
-//	@RequestMapping(value="/user", method=RequestMethod.GET)
 	@GetMapping("/user")
 	public List<User> getAllUsers(){
 		return userservice.getAllUsers();
@@ -56,7 +61,6 @@ public class UserController {
 	}
 	
 	//method to add user
-//	@RequestMapping(value="/user", method=RequestMethod.POST)
 	@PostMapping("/register")
 	public ResponseEntity<Object> addNewUser(@RequestBody UserDto userdto) {
 
@@ -74,22 +78,19 @@ public class UserController {
 	}
 	
 	//method to authenticate for login
-//	@RequestMapping(value="/login", method=RequestMethod.POST)
 	@PostMapping("/login")
-	public String authenticateUser(@RequestBody UserDto userdto ) {
+	public ResponseEntity<?> authenticateUser(@RequestBody UserDto userdto ) {
 
         User user = new User(userdto.username(),userdto.password(),userdto.mobile(),userdto.role());
-
+        //This method throws the BadCredentialsException
         Authentication  authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
 
         if(authentication.isAuthenticated()){
-
-
-            return jwtService.generateToken(user.getUsername());
+            return new ResponseEntity<>(new ApiResponse(jwtService.generateToken(user.getUsername())),HttpStatus.OK);
         }
 
-        return "Error";
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		
 
 	}

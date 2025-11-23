@@ -6,6 +6,7 @@ import com.abishek.ecommercewebsiteapiproject.users.exceptions.ExistingUserExcep
 import com.abishek.ecommercewebsiteapiproject.users.exceptions.UserErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,7 +30,20 @@ public class GlobalExceptionHandler {
 
         ProductErrorResponse productErrorResponse = new ProductErrorResponse("Server Error", LocalDateTime.now());
 
+        exception.printStackTrace();
+
         return new ResponseEntity<>(productErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleinvalidcredentials(BadCredentialsException exception){
+
+        ProductErrorResponse productErrorResponse = new ProductErrorResponse("Invalid Credentials", LocalDateTime.now());
+
+        exception.printStackTrace();
+
+        return new ResponseEntity<>(productErrorResponse, HttpStatus.NOT_FOUND);
 
     }
 
