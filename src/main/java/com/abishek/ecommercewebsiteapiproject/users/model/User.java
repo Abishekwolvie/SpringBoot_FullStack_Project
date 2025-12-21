@@ -1,10 +1,12 @@
 package com.abishek.ecommercewebsiteapiproject.users.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.abishek.ecommercewebsiteapiproject.cart.model.Cart;
+
+import com.abishek.ecommercewebsiteapiproject.orders.model.OrderTbl;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,10 +16,10 @@ import lombok.*;
 public class User {
 
 	@Id
-	@GeneratedValue
-	private long id;
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private String id;
 
-    public User(String username, String password, long mobile, String role) {
+    public User(String username, String password, String mobile, String role) {
         this.username = username;
         this.password = password;
         this.mobile = mobile;
@@ -29,9 +31,14 @@ public class User {
 	@Column(nullable = false) 
 	private String password;
 	@Column(nullable = false) 
-	private long mobile;
+	private String mobile;
     @Column(name="role",nullable = false)
     private String role;
+    @OneToMany(mappedBy = "userid")
+    private List<Cart> cart;
+    @OneToMany(mappedBy = "userid")
+    private List<OrderTbl> order;
+
 
 
 

@@ -44,6 +44,12 @@ public class UserService {
 		
 		return userrepository.findByUsername(user.getUsername());
 	}
+
+
+    public Optional<User> finduserbyemailid(String username) {
+
+        return userrepository.findByUsername(username);
+    }
 	
 	
 

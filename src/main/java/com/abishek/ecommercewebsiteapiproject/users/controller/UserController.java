@@ -7,7 +7,9 @@ import com.abishek.ecommercewebsiteapiproject.service.JwtService;
 import com.abishek.ecommercewebsiteapiproject.users.exceptions.ExistingUserException;
 import com.abishek.ecommercewebsiteapiproject.users.service.UserDetailsServiceImpl;
 import com.abishek.ecommercewebsiteapiproject.users.userdto.ApiResponse;
+import com.abishek.ecommercewebsiteapiproject.users.userdto.LoginDto;
 import com.abishek.ecommercewebsiteapiproject.users.userdto.UserDto;
+import jakarta.validation.Valid;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +64,7 @@ public class UserController {
 	
 	//method to add user
 	@PostMapping("/register")
-	public ResponseEntity<Object> addNewUser(@RequestBody UserDto userdto) {
+	public ResponseEntity<Object> addNewUser(@RequestBody @Valid UserDto userdto) {
 
         User user = new User(userdto.username(),userdto.password(),userdto.mobile(),userdto.role());
 
@@ -79,15 +81,15 @@ public class UserController {
 	
 	//method to authenticate for login
 	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@RequestBody UserDto userdto ) {
+	public ResponseEntity<?> authenticateUser(@RequestBody @Valid LoginDto loginDto ) {
 
-        User user = new User(userdto.username(),userdto.password(),userdto.mobile(),userdto.role());
+
         //This method throws the BadCredentialsException
         Authentication  authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginDto.username(),loginDto.password()));
 
         if(authentication.isAuthenticated()){
-            return new ResponseEntity<>(new ApiResponse(jwtService.generateToken(user.getUsername())),HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse(jwtService.generateToken(loginDto.username())),HttpStatus.OK);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -95,11 +97,7 @@ public class UserController {
 
 	}
 
-    @GetMapping("/hello")
-    private  String greet(){
 
-        return "Hello";
-    }
 	
 
 }

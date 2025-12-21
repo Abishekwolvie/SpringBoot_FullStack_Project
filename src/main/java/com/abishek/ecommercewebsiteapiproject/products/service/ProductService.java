@@ -35,32 +35,44 @@ public class ProductService {
         List<ProductDto> productdto = products.stream().map((product -> new ProductDto(
                 product.getPrice(), product.isIsavailable(), product.getNoofunits(), product.getStorage(),
                 product.getProcessor(), product.getOs(), product.getBrand(), product.getModel(), product.getGraphicscard(),
-                product.getImageName(), product.getImageType(), product.getImage(),product.getId()
+                product.getId(),product.getRam()
         ))).collect(Collectors.toList());
 
         return productdto;
 	}
 	
-	public Product addProducts(Product product) {
-		
-		return productrepository.save(product);
+	public ProductDto addProducts(ProductDto productdto) {
+        Product product = new Product(productdto.price(),productdto.isavailable(),productdto.noofunits(),
+                productdto.storage(),productdto.processor(),productdto.os(),productdto.brand()
+                ,productdto.model(),productdto.graphicscard(),productdto.ram());
+
+        Product savedproduct = productrepository.save(product);
+
+        ProductDto productDtoresponse = new ProductDto(savedproduct.getPrice(), savedproduct.isIsavailable(), savedproduct.getNoofunits(), savedproduct.getStorage(),
+                savedproduct.getProcessor(), savedproduct.getOs(), savedproduct.getBrand(), savedproduct.getModel(), savedproduct.getGraphicscard(),
+                savedproduct.getId(),savedproduct.getRam());
+
+		return productDtoresponse;
 		
 	}
 	
-	public Optional<ProductDto> findProductById(int id) {
+	public Optional<ProductDto> findProductById(String id) {
 		
 		 Optional<Product> product = productrepository.findById(id);
 
 
         Optional<ProductDto> productdto = product.map(productmap -> new ProductDto(productmap.getPrice(), productmap.isIsavailable(), productmap.getNoofunits(), productmap.getStorage(),
                  productmap.getProcessor(), productmap.getOs(), productmap.getBrand(), productmap.getModel(), productmap.getGraphicscard(),
-                 productmap.getImageName(), productmap.getImageType(), productmap.getImage(), productmap.getId()));
+                productmap.getId(),productmap.getRam()));
 
-
-
-		 
 		 return productdto;
 	}
+
+
+    public Optional<Product> findProductByIdcartadd(String id) {
+        Optional<Product> product = productrepository.findById(id);
+        return product;
+    }
 	
 	public List<Product> findProductByBrandName(String brandname){
 		
@@ -68,21 +80,7 @@ public class ProductService {
 	}
 	
 	public List<Product> findProductByPriceRange(int minrange,int maxrange){
-		
-//		RowMapper productrowmapper  = (ResultSet rs, int rowNum) ->{
-//			Product product = new Product();
-//			product.setId(rs.getInt("id"));
-//			product.setBrand(rs.getString("brand"));
-//			product.setIsavailable(rs.getBoolean("isavailable"));
-//			product.setModel(rs.getString("model"));
-//			product.setNoofunits(rs.getInt("noofunits"));
-//			product.setOs(rs.getString("os"));
-//			product.setPrice(rs.getLong("price"));
-//			
-//			return product;
-//		};
-//		
-//		return jdbctemplate.query("Select * from product where price between ? and ?",productrowmapper,minrange,maxrange);
+
 		
 		return productrepository.findByPriceBetween(minrange, maxrange);
 	}
@@ -102,7 +100,7 @@ public class ProductService {
 		return productrepository.save(product);
 	}
 	
-	public void deleteproduct(int id) {
+	public void deleteproduct(String id) {
 		
 		 productrepository.deleteById(id);
 		
@@ -112,6 +110,10 @@ public class ProductService {
 	public List<Product> searchbykeyword(String keyword){
 		return productrepository.searchforproduct(keyword);
 	}
+
+    public List<Product> findproductbyids(List<String> productids){
+        return productrepository.findByIdIn(productids);
+    }
 	
 
 }

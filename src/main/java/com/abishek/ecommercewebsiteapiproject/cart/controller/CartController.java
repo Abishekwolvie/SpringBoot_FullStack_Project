@@ -1,20 +1,14 @@
 package com.abishek.ecommercewebsiteapiproject.cart.controller;
 
-import java.net.URI;
 import java.util.List;
 
+import com.abishek.ecommercewebsiteapiproject.cart.model.CartDTO;
+import com.abishek.ecommercewebsiteapiproject.cart.model.CartDTOObj;
+import com.abishek.ecommercewebsiteapiproject.cart.model.CartResponseDTO;
+import com.abishek.ecommercewebsiteapiproject.users.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.*;
 
 import com.abishek.ecommercewebsiteapiproject.cart.CartRepository;
 import com.abishek.ecommercewebsiteapiproject.cart.model.Cart;
@@ -29,29 +23,30 @@ public class CartController {
 	
 	private CartRepository cartRepository;
 	private CartService cartservice;
+    private UserService userService;
 	
 	
-	public CartController(CartRepository cartRepository,CartService cartservice) {
+	public CartController(CartRepository cartRepository,CartService cartservice,UserService userService) {
 		super();
 		this.cartRepository = cartRepository;
 		this.cartservice = cartservice;
+        this.userService=userService;
 	}
 	
 	//get cart data by userid
-	@GetMapping("cart/getcartdetails/{userid}")
-	public ResponseEntity<List<Cart>> getcartProductsByUsername(@PathVariable String userid){
-		
-		List<Cart> cartproductsbyusername = cartservice.getcartProductsByUsername(userid);
-		
+	@GetMapping("/cart/getcartdetails/{userid}")
+	public ResponseEntity<?> getcartProductsByUsername(@PathVariable String userid){
+
+        List<CartResponseDTO> cartproductsbyusername = cartservice.getcartProductsByUsername(userid);
+
 		return new ResponseEntity<>(cartproductsbyusername,HttpStatus.OK);
-		
 	}
 
 	//add product to cart
-	@PostMapping("products/addtocart")
-	public ResponseEntity<Object> addtocart(@RequestBody Cart cart){
+	@PostMapping("/products/addtocart")
+	public ResponseEntity<Object> addtocart(@RequestBody CartDTO cart){
 		
-		Cart cartsaved = cartservice.addtocart(cart);
+		CartDTOObj cartsaved = cartservice.addtocart(cart);
 		
 		if(cartsaved!=null) {
 			
@@ -61,16 +56,14 @@ public class CartController {
 		return ResponseEntity.internalServerError().build();
 	}
 	
-	//delete product
-//	@DeleteMapping("cart/deleteproductfromcart")
-//	public ResponseEntity<Object> deletefromcart(@RequestBody Cart cart){
-//		System.out.println(cart);
-//
-//		
-//		cartservice.deletefromcart(cart);
-//	
-//		return new ResponseEntity<>(cart,HttpStatus.OK);
-//			
-//	}
+
+    @DeleteMapping("/products/removefromcart/{cartitemid}")
+    public ResponseEntity<?> removefromcart(@PathVariable  String cartitemid){
+
+        cartservice.deleteproductfromcart(cartitemid);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
 
 }

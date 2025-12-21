@@ -57,23 +57,17 @@ public class ProductsController {
 
 	//add a product)
 	@PostMapping("/products")
-	public ResponseEntity<Object> addProducts(@RequestBody Product product){
+	public ResponseEntity<ProductDto> addProducts(@RequestBody ProductDto productdto){
 
-		
-		Product addedproduct = productservice.addProducts(product);
-	
-		
-		URI location = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{productid}").
-		buildAndExpand(addedproduct.getId()).toUri();
-		
-		System.out.println(location);
-		
-		return ResponseEntity.created(location).build();
+
+		ProductDto addedproduct = productservice.addProducts(productdto);
+
+		return new ResponseEntity<>(productdto,HttpStatus.CREATED);
 	}
 
 	//get a product by id
 	@GetMapping("/products/{productid}")
-	public  ResponseEntity<ProductDto> findProductById(@PathVariable int productid) {
+	public  ResponseEntity<ProductDto> findProductById(@PathVariable String productid) {
 
 		
 		Optional<ProductDto> product  = productservice.findProductById(productid);
@@ -140,7 +134,7 @@ public class ProductsController {
 	}
 	
 	@DeleteMapping("/products/{id}")
-	public ResponseEntity<Object> deleteproduct(@PathVariable int id){
+	public ResponseEntity<Object> deleteproduct(@PathVariable String id){
 		
 
 			productservice.deleteproduct(id);

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.abishek.ecommercewebsiteapiproject.products.model.Product;
 
-public interface ProductRepository extends JpaRepository<Product,Integer>{
+public interface ProductRepository extends JpaRepository<Product,String>{
 	
 	
 	public List<Product> findAllByBrand(String brandname);
@@ -18,4 +18,6 @@ public interface ProductRepository extends JpaRepository<Product,Integer>{
 	public List<Product> searchforproduct(String keyword);
 	
 	public List<Product> findByPriceBetween(int minrange,int maxrange);
+
+    public List<Product> findByIdIn(List<String> productids);
 }

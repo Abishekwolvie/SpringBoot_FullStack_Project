@@ -34,6 +34,8 @@ public class SecurityConfiguration {
 
 	@Bean
 	public SecurityFilterChain getSecurityFilterChain(HttpSecurity httpsecurity) throws Exception {
+        //to fix cors error
+        httpsecurity.cors(Customizer.withDefaults());
 		
 		httpsecurity.csrf(customizer->customizer.disable());//disabling csrftoken
 		//authenticate all http requests
