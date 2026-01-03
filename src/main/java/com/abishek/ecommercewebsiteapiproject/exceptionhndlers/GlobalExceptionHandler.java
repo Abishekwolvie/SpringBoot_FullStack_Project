@@ -1,6 +1,7 @@
 package com.abishek.ecommercewebsiteapiproject.exceptionhndlers;
 
 import com.abishek.ecommercewebsiteapiproject.cart.exceptions.CartItemNotFoundException;
+import com.abishek.ecommercewebsiteapiproject.orders.exceptions.OrderNotFoundException;
 import com.abishek.ecommercewebsiteapiproject.products.exceptions.ProductErrorResponse;
 import com.abishek.ecommercewebsiteapiproject.products.exceptions.ProductNotFoundException;
 import com.abishek.ecommercewebsiteapiproject.users.exceptions.ExistingUserException;
@@ -91,6 +92,13 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(productErrorResponse, HttpStatus.NOT_FOUND);
 
+
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<?> handleordernotfoundexception(OrderNotFoundException exception){
+
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
 
     }
 }
