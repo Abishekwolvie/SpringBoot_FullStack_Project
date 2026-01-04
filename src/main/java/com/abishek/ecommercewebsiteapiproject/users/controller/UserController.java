@@ -18,12 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.abishek.ecommercewebsiteapiproject.users.repository.UserRepository;
 import com.abishek.ecommercewebsiteapiproject.users.service.UserService;
@@ -96,6 +91,19 @@ public class UserController {
 		
 
 	}
+
+    @GetMapping("/finduseridbyusername/{username}")
+    public ResponseEntity<?> getuseridbyusername(@PathVariable String username){
+
+        if(username!=null){
+         String userid =   userservice.getuserid(username);
+
+         return new ResponseEntity<>(userid,HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    }
 
 
 	

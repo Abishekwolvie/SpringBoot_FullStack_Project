@@ -50,6 +50,15 @@ public class UserService {
 
         return userrepository.findByUsername(username);
     }
+
+    public String getuserid(String username){
+
+        User user = userrepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
+        return user.getId();
+    }
+
+
 	
 	
 
