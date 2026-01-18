@@ -94,8 +94,10 @@ public class OrderService {
 
         List<OrderItem> orderitems = orderItemRepository.findAllByOrderidval(orderTbl);
 
+        User usermobile = userRepository.findById(orderTbl.getUserid().getId()).orElseThrow(()->new UsernameNotFoundException("Username not found"));
+
         List<OrderItemDto> orderitemlist = orderitems.stream().map((orderitem) -> new OrderItemDto(orderitem.getOrderitemid(), orderitem.getProductdescription()
-                , orderitem.getProductprice(), orderitem.getOrderidval().getOrderid())).collect(Collectors.toList());
+                , orderitem.getProductprice(), orderitem.getOrderidval().getOrderid(),orderTbl.getDateTime(),usermobile.getMobile())).collect(Collectors.toList());
 
 
         return orderitemlist;
